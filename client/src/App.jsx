@@ -1,12 +1,15 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 
 
 import './App.css';
-import Navbar from "../component/Navbar";
-import Home from "../component/Home";
-import Login from "../component/Login";
-import Post from "../component/Post";
+import './App.css';
+
 import axios from 'axios'
+import Home from './component/Home';
+import Login from './component/Login';
+import Post from './component/Post';
+// import Navbar from './component/Navbar';
 
 axios.defaults.baseURL = 'http://localhost:5000'
 axios.defaults.withCredentials = true;
@@ -16,7 +19,7 @@ const App = () => {
   return (
     <BrowserRouter>
     <div>
-      <Navbar user={user}/>
+      {/* <Navbar user={user}/> */}
       <Routes>
         <Route path="/" element={<Home />}/>
         <Route path="/login" 
