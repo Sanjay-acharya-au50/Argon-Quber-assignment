@@ -1,16 +1,8 @@
 import React from 'react'
 
-
 const Home = () => {
-
-
-
-
   return (
-<>
-    hello
-</>
-
+    <div>Home</div>
   )
 }
 
