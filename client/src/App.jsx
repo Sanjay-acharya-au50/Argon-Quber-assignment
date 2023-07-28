@@ -9,26 +9,28 @@ import axios from 'axios'
 import Home from './component/Home';
 import Login from './component/Login';
 import Post from './component/Post';
+import { ContextProvider } from './context/Context';
+
 // import Navbar from './component/Navbar';
 
 axios.defaults.baseURL = 'http://localhost:5000'
 axios.defaults.withCredentials = true;
 
 const App = () => {
-  const user = true;
   return (
+    <ContextProvider>
+
     <BrowserRouter>
     <div>
-      {/* <Navbar user={user}/> */}
+      {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<Home />}/>
-        <Route path="/login" 
-        element={<Login/>}
-        />
+        <Route path="/login" element={<Login/>}/>
         <Route path="/post" element={<Post/>} />
       </Routes>
     </div>
     </BrowserRouter>
+        </ContextProvider>
   );
   
 };

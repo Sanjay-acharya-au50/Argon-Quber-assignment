@@ -5,8 +5,20 @@ const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
-
+const cors = require('cors')
 const app = express();
+const User = require('./db/userSchema')
+const Manualuser = require('./db/manualUser')
+require('./db/db')
+var cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken');
+
+
+app.use(cors({
+  origin : 'http://localhost:5173',
+  credentials : true,
+  methods : 'GET,POST'
+}))
 
 // Set up session middleware
 app.use(session({
@@ -18,6 +30,8 @@ app.use(session({
 // Initialize Passport.js
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cookieParser())
+app.use(express.json())
 
 // Replace these with your actual Google OAuth credentials
 const GOOGLE_CLIENT_ID = '444451465392-m7b6tl3a1bl00gjvrqhapl92ictsrgp4.apps.googleusercontent.com';
@@ -39,11 +53,35 @@ passport.use(new LinkedInStrategy({
   clientSecret: LINKEDIN_CLIENT_SECRET,
   callbackURL: '/auth/linkedin/callback'
 },
-(accessToken, refreshToken, profile, done) => {
+async (accessToken, refreshToken, profile, done) => {
   // You can customize how the user profile data is handled here.
   // For simplicity, we'll pass the entire profile to the done function.
-  console.log(profile)
-  return done(null, profile);
+  console.log(
+    profile.displayName,
+    profile.name.familyName,
+    profile.name.givenName,
+    profile.photos[3]
+    )
+  let findUserId = profile.id;
+  const exist = await User.findOne({id:findUserId});
+  // console.log(exist)
+
+   if(!exist){
+     console.log('not exist')
+     const saveUser = await User.create({
+      id: profile.id,
+      displayName: profile.displayName,
+      firstName : profile.name.familyName,
+      lastName : profile.name.givenName,
+      photos: profile.photos[3],
+     })
+     console.log("saved to DB::",saveUser)
+  return done(null, saveUser);
+
+  }else{
+     console.log('exist profile', profile)
+     return done(null, profile);
+   }
 }));
 
 passport.use(new GoogleStrategy({
@@ -51,11 +89,32 @@ passport.use(new GoogleStrategy({
   clientSecret: GOOGLE_CLIENT_SECRET,
   callbackURL: '/auth/google/callback'
 },
-(accessToken, refreshToken, profile, done) => {
+async (accessToken, refreshToken, profile, done) => {
   // You can customize how the user profile data is handled here.
   // For simplicity, we'll pass the entire profile to the done function.
-  console.log(profile)
-  return done(null, profile);
+  // console.log(profile.emails[0].value)
+  let findUserId = profile.id;
+  const exist = await User.findOne({id:findUserId});
+  // console.log(exist)
+
+   if(!exist){
+     console.log('not exist')
+     const saveUser = await User.create({
+      id: profile.id,
+      displayName: profile.displayName,
+      firstName : profile.name.familyName,
+      lastName : profile.name.givenName,
+      emails: profile.emails[0].value,
+      photos: profile.photos,
+      provider: profile.provider,
+     })
+     console.log("saved to DB::",saveUser)
+  return done(null, saveUser);
+
+  }else{
+     console.log('exist profile', profile)
+     return done(null, profile);
+   }
 }));
 
 // Routes for authentication
@@ -64,25 +123,102 @@ app.get('/auth/linkedin',
 
   app.get('/auth/linkedin/callback', passport.authenticate('linkedin', { failureRedirect: '/login' }), (req, res) => {
     // Handle successful authentication and redirect the user to the appropriate page.
-    res.redirect('/post');
+    res.redirect('http://localhost:5173');
+    // var data = 'san'
+    // res.json({message:data});
+
   });
   
-  app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }));
+  app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
   app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
     // Handle successful authentication and redirect the user to the appropriate page.
-    res.redirect('/post');
+    res.redirect('http://localhost:5173');
+    // res.json('test working')
   });
 
-  app.get('/post',(req,res)=>{
-    res.json('done');
+  app.get('/',(req,res)=>{
+    console.log(req.cookies)
+    const user = req.user
+    res.json({user:user,cooki:req.cookies});
   })
 
-app.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
-});
+
+
+  app.get('/logout', function(req, res, next) {
+    res.clearCookie('connect.sid', new Date(0))
+    req.logout((err) => {
+      if (err) {
+        console.error('Logout error:', err);
+      }
+      res.redirect('/'); 
+    });
+  });
+
+
+  app.post('/normalUserLogout', function(req, res, next) {
+   const cook = req.cookies;
+   console.log(cook);
+   res.clearCookie('token', new Date(0))
+   res.status(202).json(cook)
+  });
+
+
+
+  app.get('/normalUserGet', async (req,res)=>{
+    const {token} = req.cookies;
+    console.log("167:",token);
+
+    try {
+      if(token){
+        console.log("171:::",token)
+        const jwtVerify = jwt.verify(token,'sec');
+        console.log("vrify",jwtVerify)
+        res.status(203).json(jwtVerify)
+      }else{
+        res.status(403).json('token not valid')
+      }
+      } catch (error) {
+        console.log(error)
+        res.status(403).json(error)
+    }
+  })
+
+  app.post('/userLogin', async (req,res)=>{
+    // console.log(req.body);
+    const { userName, firstName, lastName, email, password} = req.body;
+    const emailExist = await Manualuser.findOne({ email : email })
+    console.log(emailExist)
+
+    try {
+      if(emailExist){
+        console.log('registered')
+        const jwtSign = jwt.sign({userName : emailExist.userName, email : emailExist.email}, "sec");
+        res.cookie('token',jwtSign)
+        console.log('jwtSign',jwtSign)
+        res.status(203).json(emailExist)
+      }else{
+        const saveUser = await Manualuser.create({
+          userName : userName,
+          firstName : firstName,
+          lastName : lastName,
+          email : email,
+          password : password,
+             })
+             console.log("saved",saveUser)
+            const jwtSign = jwt.sign({userName : saveUser.userName, email : saveUser.email}, "sec");
+            res.cookie('token',jwtSign)
+             res.status(202).json(saveUser)
+      }
+    } catch (error) {
+     console.log(error);
+      res.status(409).json(error)
+    }
+  })
+
+
+
+
 
 app.listen(5000, () => {
   console.log('Server is running on http://localhost:5000');

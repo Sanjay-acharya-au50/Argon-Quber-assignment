@@ -11,10 +11,10 @@ const Navbar = () => {
   };
 
   return (
-    <div style={{display:'flex', gap:'20px'}}>
+    <div style={{display:'flex', gap:'20px'}} className='bg-black h-[70px] text-white flex justify-center items-center'>
             <Link to={'/'}>home</Link>
             <Link to={'/login'}>login</Link>
-            <Link to={'/post/:id'}>post</Link>
+            <Link to={'/post'}>post</Link>
             {/* <button onClick={handleLogout}>logout</button> */}
     </div>
   )
