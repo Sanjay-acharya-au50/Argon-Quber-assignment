@@ -19,7 +19,6 @@ const Right = () => {
   const { edit, setEdit } = useContext(Context);
   // console.log(edit)
 
-  const [normalUser, setNormalUser] = useState(true);
 
   useEffect(() => {
     const fun = async () => {
@@ -35,9 +34,6 @@ const Right = () => {
           // setGimage(res.data.user.photos[0].value)
           // setNormalUser(res.data.cooki);
         } 
-        else if( res.data?.cooki){
-          setNormalUser(true)
-        }
         else {
           navigate("/login");
           console.log("not a user redirected to login ");
@@ -144,11 +140,6 @@ const Right = () => {
             <>{edit && <ProfileEdit />}</>
           </div>
         )}
-        <>
-          {normalUser && (
-            <NormalUser/>
-          )}
-        </>
       </div>
     </>
   );

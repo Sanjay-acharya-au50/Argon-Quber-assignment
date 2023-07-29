@@ -8,10 +8,13 @@ import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 import { Context } from '../context/Context'
 
-const Login = () => {
+const Register = () => {
   const {NUser,setNUser} = useContext(Context)
 
   const navigate = useNavigate()
+  const [userName , setUserName] = useState('')
+  const [firstName , setFirstName] = useState('')
+  const [lastName , setLastName] = useState('')
   const [email , setEmail] = useState('')
   const [password , setPassword] = useState('')
 
@@ -28,20 +31,20 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post('/userLogin',{
-          email,password
+      const res = await axios.post('/register',{
+        userName,firstName,lastName,email,password
       })
       console.log(res);
-      if(res.status === 203 || 202){
+      if(res.status === 202){
         setNUser(res.data)
-        navigate('/profile')
+        navigate('/login')
       }
     } catch (error) {
-      navigate('/login')
-      alert(error.response.data)
-      console.log(error.response.data)
+        alert('email already registered')
+      console.log(error)
     }
   }
+  
 console.log(NUser)
   return (
     <div className='md:w-full h-[100vh] flex justify-center items-center flex-col '>
@@ -63,6 +66,19 @@ console.log(NUser)
     <form onSubmit={handleSubmit}>
       <div className=' flex justify-center items-center flex-col bg-white'>
 
+      <label className='text-start  w-full pl-2 text-[14px] bg-white'>User name</label>
+      <input type="text" required onChange={(e)=>setUserName(e.target.value)} placeholder='User name' className='border w-full p-2 rounded-lg mb-3 text-[14px] bg-white'/>
+
+      <div className='flex flex-row gap-5 bg-white'>
+        <div className='flex justify-center items-center flex-col bg-white'>
+      <label className='text-start  w-full pl-2 text-[14px] bg-white'>First name</label>
+      <input type="text" required onChange={(e)=>setFirstName(e.target.value)} placeholder='First name' className='border w-full p-2 rounded-lg mb-3 text-[14px] bg-white'/>
+      </div>
+      <div className='flex justify-center items-center flex-col bg-white'>
+      <label className='text-start  w-full pl-2 text-[14px] bg-white'>Last name</label>
+      <input type="text" required onChange={(e)=>setLastName(e.target.value)} placeholder='Last name' className='border w-full p-2 rounded-lg mb-3 text-[14px] bg-white'/>
+      </div>
+      </div>
 
       <label className='text-start  w-full pl-2 text-[14px] bg-white'>Email</label>
       <input type="text" required onChange={(e)=>setEmail(e.target.value)} placeholder='Email ' className='border w-full p-2 rounded-lg mb-3 text-[14px] bg-white'/>
@@ -72,11 +88,12 @@ console.log(NUser)
       <button className='bg-black w-full p-2 rounded text-[13px] text-white  hover:bg-white hover:shadow-lg hover:border hover:text-black duration-700'>Get Started</button>
       </div>
     </form>
-    <div className='bg-white p-2'>Don't have an account? <Link to={'/register'} className='bg-white'><b className='bg-white'>Register</b></Link></div>
+
+    <div className='bg-white p-2'> Already have an account ? <Link to={'/login'} className='bg-white'><b className='bg-white '>Login</b></Link></div>
 
     </motion.div>
     </div>
   );
 };
 
-export default Login;
+export default Register;

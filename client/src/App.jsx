@@ -10,6 +10,8 @@ import Home from './component/Home';
 import Login from './component/Login';
 import Post from './component/Post';
 import { ContextProvider } from './context/Context';
+import Register from './component/Register';
+import NormalUserHome from './component/NormalUserHome';
 
 // import Navbar from './component/Navbar';
 
@@ -25,8 +27,10 @@ const App = () => {
       {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<Home />}/>
+        <Route path="/register" element={<Register/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/post" element={<Post/>} />
+        <Route path="/profile" element={<NormalUserHome/>} />
       </Routes>
     </div>
     </BrowserRouter>

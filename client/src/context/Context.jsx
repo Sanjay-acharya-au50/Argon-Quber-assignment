@@ -5,7 +5,10 @@ import { createContext, useState } from "react";
 export function ContextProvider ({children}) {
     const [state,setState] = useState();
     const [edit,setEdit] = useState(false);
-    const val = {state,setState,edit,setEdit}  
+    const [NUser,setNUser] = useState()
+    const [post,setPost] = useState()    
+
+    const val = {state,setState,edit,setEdit,NUser,setNUser,post,setPost}  
     return(
         <>
             <Context.Provider value = {val}>
