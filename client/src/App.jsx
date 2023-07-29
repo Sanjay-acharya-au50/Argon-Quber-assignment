@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 
 
@@ -9,7 +9,7 @@ import axios from 'axios'
 import Home from './component/Home';
 import Login from './component/Login';
 import Post from './component/Post';
-import { ContextProvider } from './context/Context';
+import { Context, ContextProvider } from './context/Context';
 import Register from './component/Register';
 import NormalUserHome from './component/NormalUserHome';
 
@@ -19,8 +19,9 @@ axios.defaults.baseURL = 'http://localhost:5000'
 axios.defaults.withCredentials = true;
 
 const App = () => {
+  const {userProtect,setUserProtect} = useContext(Context)
+  console.log("userProtect:",userProtect)
   return (
-    <ContextProvider>
 
     <BrowserRouter>
     <div>
@@ -30,11 +31,16 @@ const App = () => {
         <Route path="/register" element={<Register/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/post" element={<Post/>} />
-        <Route path="/profile" element={<NormalUserHome/>} />
+
+        <Route path="/profile" element={
+          <>
+          {userProtect?.email ? <NormalUserHome/> : <Navigate to={'/login'}/>}
+          </>
+        } />
       </Routes>
     </div>
     </BrowserRouter>
-        </ContextProvider>
+
   );
   
 };

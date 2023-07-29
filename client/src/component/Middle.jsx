@@ -1,5 +1,6 @@
 import React from 'react'
 import {motion} from 'framer-motion'
+import ShareContentForm from './ShareContentForm'
 const Middle = () => {
   
   return (
@@ -12,6 +13,7 @@ const Middle = () => {
      exit={{opacity:0,scale:0}}
  
     ></motion.div>
+    
     <motion.div className='border w-full h-[220px] bg-white shadow-2xl'
      initial={{opacity:0, scale:0.8}}
      whileInView={{ opacity:1, scale:1}}
@@ -19,7 +21,10 @@ const Middle = () => {
      viewport={{once:false}}
      exit={{opacity:0,scale:0}}
  
-    ></motion.div>
+    >
+
+    </motion.div>
+ 
     <motion.div className='border w-full h-[220px] bg-white shadow-2xl'
      initial={{opacity:0, scale:0.8}}
      whileInView={{ opacity:1, scale:1}}
@@ -27,47 +32,11 @@ const Middle = () => {
      viewport={{once:false}}
      exit={{opacity:0,scale:0}}
  
-    ></motion.div>
-    <motion.div className='border w-full h-[220px] bg-white shadow-2xl'
-     initial={{opacity:0, scale:0.8}}
-     whileInView={{ opacity:1, scale:1}}
-     transition={{  duration: 0.5 }}
-     viewport={{once:false}}
-     exit={{opacity:0,scale:0}}
+    >
+      <ShareContentForm/>
+
+    </motion.div>
  
-    ></motion.div>
-    <motion.div className='border w-full h-[220px] bg-white shadow-2xl'
-     initial={{opacity:0, scale:0.8}}
-     whileInView={{ opacity:1, scale:1}}
-     transition={{  duration: 0.5 }}
-     viewport={{once:false}}
-     exit={{opacity:0,scale:0}}
- 
-    ></motion.div>
-    <motion.div className='border w-full h-[220px] bg-white shadow-2xl'
-     initial={{opacity:0, scale:0.8}}
-     whileInView={{ opacity:1, scale:1}}
-     transition={{  duration: 0.5 }}
-     viewport={{once:false}}
-     exit={{opacity:0,scale:0}}
- 
-    ></motion.div>
-    <motion.div className='border w-full h-[220px] bg-white shadow-2xl'
-     initial={{opacity:0, scale:0.8}}
-     whileInView={{ opacity:1, scale:1}}
-     transition={{  duration: 0.5 }}
-     viewport={{once:false}}
-     exit={{opacity:0,scale:0}}
- 
-    ></motion.div>
-    <motion.div className='border w-full h-[220px] bg-white shadow-2xl'
-     initial={{opacity:0, scale:0.8}}
-     whileInView={{ opacity:1, scale:1}}
-     transition={{  duration: 0.5 }}
-     viewport={{once:false}}
-     exit={{opacity:0,scale:0}}
- 
-    ></motion.div>
 
     </motion.div>
   )

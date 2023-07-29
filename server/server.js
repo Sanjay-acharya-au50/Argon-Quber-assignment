@@ -16,6 +16,7 @@ const multer = require("multer");
 const fs = require("fs");
 const UserPost = require("./db/userPost");
 const cloudinary = require("cloudinary").v2;
+const axios = require('axios')
 
 app.use(
   cors({
@@ -64,6 +65,8 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
+let accToken = ""
+
 passport.use(
   new LinkedInStrategy(
     {
@@ -72,14 +75,15 @@ passport.use(
       callbackURL: "/auth/linkedin/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
-      // You can customize how the user profile data is handled here.
-      // For simplicity, we'll pass the entire profile to the done function.
-      console.log(
-        profile.displayName,
-        profile.name.familyName,
-        profile.name.givenName,
-        profile.photos[3]
-      );
+      console.log("accessTok:",accessToken,"refresh:",refreshToken)
+      accToken = accToken+accessToken;
+      console.log(accToken)
+      // console.log(
+      //   profile.displayName,
+      //   profile.name.familyName,
+      //   profile.name.givenName,
+      //   profile.photos[3]
+      // );
       let findUserId = profile.id;
       const exist = await User.findOne({ id: findUserId });
       // console.log(exist)
@@ -93,16 +97,17 @@ passport.use(
           lastName: profile.name.givenName,
           photos: profile.photos[3],
         });
-        console.log("saved to DB::", saveUser);
+        // console.log("saved to DB::", saveUser);
         return done(null, saveUser);
       } else {
-        console.log("exist profile", profile);
+        // console.log("exist profile", profile);
         return done(null, profile);
       }
     }
   )
 );
 
+console.log("acc::::::::undefine",accToken)
 passport.use(
   new GoogleStrategy(
     {
@@ -111,8 +116,7 @@ passport.use(
       callbackURL: "/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
-      // You can customize how the user profile data is handled here.
-      // For simplicity, we'll pass the entire profile to the done function.
+      console.log("accessTok:",accessToken,"refresh:",refreshToken)
       // console.log(profile.emails[0].value)
       let findUserId = profile.id;
       const exist = await User.findOne({ id: findUserId });
@@ -140,14 +144,9 @@ passport.use(
 );
 
 // Routes for authentication
-app.get(
-  "/auth/linkedin",
-  passport.authenticate("linkedin", { state: "SOME STATE" })
-);
+app.get("/auth/linkedin", passport.authenticate("linkedin", { state: "SOME STATE" }));
 
-app.get(
-  "/auth/linkedin/callback",
-  passport.authenticate("linkedin", { failureRedirect: "/login" }),
+app.get("/auth/linkedin/callback", passport.authenticate("linkedin", { failureRedirect: "/login" }),
   (req, res) => {
     // Handle successful authentication and redirect the user to the appropriate page.
     res.redirect("http://localhost:5173");
@@ -156,10 +155,7 @@ app.get(
   }
 );
 
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 app.get(
   "/auth/google/callback",
@@ -172,9 +168,12 @@ app.get(
 );
 
 app.get("/", (req, res) => {
-  console.log(req.cookies);
+  // console.log(req.cookies);
   const user = req.user;
-  res.json({ user: user, cooki: req.cookies });
+  // console.log("user::::",user);
+  // const accTok = req.user.accessToken;
+  // console.log('accTok', accTok)
+  res.json({ user: user});
 });
 
 app.get("/logout", function (req, res, next) {
@@ -234,7 +233,11 @@ app.post("/userLogin", async (req, res) => {
           },
           "sec"
         );
-        res.cookie("token", jwtSign);
+        res.cookie("token", jwtSign,
+        {
+          sameSite: 'none',
+          secure: true,
+      });
         console.log("jwtSign", jwtSign);
         res.status(203).json(emailExist);
       } else {
@@ -277,9 +280,6 @@ app.post("/register", async (req, res) => {
 });
 
 // user Post
-
-// 732113818452973
-
 app.post("/userPost", upload.single("files"), async (req, res) => {
   const { path } = req.file;
   // console.log(req.file)
@@ -318,6 +318,32 @@ app.get("/getManualUserData", async (req, res) => {
     return res.status(401).json(error);
   }
 });
+
+
+// ----------------------LINKEDIN POST----------------------------------------------
+const linkedInApiBaseUrl = 'https://api.linkedin.com/v2/';
+
+// Route to handle content sharing
+app.post('/share', (req, res) => {
+  const { content } = req.body; // Assuming the content to be shared is sent in the request body
+  // The access token obtained during the authentication process
+  // const accessTok = req.user
+  console.log('accessTok328:', accToken)
+  // The data for the post
+  const postData = {
+    owner: `urn:li:person:${LINKEDIN_CLIENT_ID}`, // Replace with the LinkedIn User ID of the user
+    text: {
+      text: content,
+    },
+  };
+  console.log("post",postData)
+});
+
+
+
+// --------------------------------------------------------------------
+
+
 
 app.listen(5000, () => {
   console.log("Server is running on http://localhost:5000");

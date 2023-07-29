@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Context } from '../context/Context'
 
 const Login = () => {
-  const {NUser,setNUser} = useContext(Context)
+  const {NUser,setNUser,setUserProtect} = useContext(Context)
 
   const navigate = useNavigate()
   const [email , setEmail] = useState('')
@@ -34,12 +34,13 @@ const Login = () => {
       console.log(res);
       if(res.status === 203 || 202){
         setNUser(res.data)
+        setUserProtect(res.data)
         navigate('/profile')
       }
     } catch (error) {
       navigate('/login')
-      alert(error.response.data)
-      console.log(error.response.data)
+      // alert(error.response.data)
+      console.log(error.response?.data)
     }
   }
 console.log(NUser)
