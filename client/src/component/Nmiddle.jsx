@@ -99,9 +99,9 @@ const Nmiddle = () => {
         </form>
       </motion.div>
       {post
-        ? post.map((e) => {
+        ? post.map((e,i) => {
             return (
-              <motion.div
+              <motion.div key={i}
                 className=" md:flex items-center w-full md:h-[220px] bg-white shadow-2xl "
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}

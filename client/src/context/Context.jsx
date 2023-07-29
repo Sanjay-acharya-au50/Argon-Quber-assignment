@@ -8,8 +8,9 @@ export function ContextProvider ({children}) {
     const [NUser,setNUser] = useState()
     const [post,setPost] = useState()    
     const [userProtect,setUserProtect] = useState()    
+    const [userProtectSo,setUserProtectSo] = useState()    
 
-    const val = {state,setState,edit,setEdit,NUser,setNUser,post,setPost,userProtect,setUserProtect}  
+    const val = {state,setState,edit,setEdit,NUser,setNUser,post,setPost,userProtect,setUserProtect,userProtectSo,setUserProtectSo}  
     return(
         <>
             <Context.Provider value = {val}>

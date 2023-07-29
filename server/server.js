@@ -15,6 +15,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const fs = require("fs");
 const UserPost = require("./db/userPost");
+const socialUserPost = require("./db/SocialPost");
 const cloudinary = require("cloudinary").v2;
 const axios = require('axios')
 
@@ -305,13 +306,49 @@ app.post("/userPost", upload.single("files"), async (req, res) => {
     return res.status(401).json({ error });
   }
 });
+app.post("/socialUserPost", upload.single("files"), async (req, res) => {
+  const { path } = req.file;
+  // console.log(req.file)
+  const { blog } = req.body;
+  console.log("blog", blog);
+  // const { token } = req.cookies;
+  // console.log(token);
+
+  const result = await cloudinary.uploader.upload(path, {folder : "socialArgon" });
+  // console.log(result)
+  // const jwtVerify = jwt.verify(token, "sec");
+  // console.log("jwtVerify", jwtVerify);
+  try {
+    const saveUserPost = await socialUserPost.create({
+      // UserName: jwtVerify.id,
+      post: result.secure_url,
+      blog: blog,
+    });
+    console.log("saveUserPost", saveUserPost);
+    return res.status(201).json(saveUserPost);
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ error });
+  }
+});
 
 app.get("/getManualUserData", async (req, res) => {
-  const {token} =req.cookies;
 
   try {
 
     const getPost = await UserPost.find();
+    console.log("getPost", getPost);
+    return res.status(201).json(getPost);
+  } catch (error) {
+    return res.status(401).json(error);
+  }
+});
+
+app.get("/getUserData", async (req, res) => {
+
+  try {
+
+    const getPost = await socialUserPost.find();
     console.log("getPost", getPost);
     return res.status(201).json(getPost);
   } catch (error) {

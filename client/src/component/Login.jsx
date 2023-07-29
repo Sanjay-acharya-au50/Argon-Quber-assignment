@@ -19,10 +19,13 @@ const Login = () => {
   const handleLinkedinLogin = () => {
     // Redirect the user to the Google OAuth login page
     window.location.href = 'http://localhost:5000/auth/linkedin';
+    setUserProtect({email:'san@gmail.com'})
+
   };
   const handleGoogleLogin = () => {
     // Redirect the user to the Google OAuth login page
     window.location.href = 'http://localhost:5000/auth/google';
+    setUserProtect({email:'san@gmail.com'})
   };
 
   const handleSubmit = async (e) => {
@@ -43,7 +46,7 @@ const Login = () => {
       console.log(error.response?.data)
     }
   }
-console.log(NUser)
+console.log("NUser",NUser)
   return (
     <div className='md:w-full h-[100vh] flex justify-center items-center flex-col '>
 
