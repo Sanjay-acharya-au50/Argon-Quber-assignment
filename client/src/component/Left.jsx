@@ -13,8 +13,7 @@ const Left = () => {
     exit={{opacity:0,scale:0}}
     >
     <Link to={'/'} className='bg-white'>Home</Link>
-    <div className='bg-white'>Contact</div>
-    <Link to={'/'} className='bg-white'>Drive Link</Link>
+    <Link to={'https://drive.google.com/drive/folders/19xTW4yYW4hKQFzUJqPBIKrOWdCHzigvo?usp=sharing'} className='bg-white'>Drive Link</Link>
     <a href={'https://github.com/Sanjay-acharya-au50/Argon-Quber-assignment'} className='bg-white'>Github Repo</a>
     <a href={'https://www.linkedin.com/in/sanjay-achari-693a58121'} className='bg-white'>Linked Profile</a>
     <a href={'https://console.cloud.google.com/welcome?project=devsanjay'} className='bg-white'>Google Api Doc</a>

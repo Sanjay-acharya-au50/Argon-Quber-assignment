@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { BiSolidSend } from "react-icons/bi";
 import axios from "axios";
 import { Context } from "../context/Context";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Middle = () => {
   const navigate = useNavigate();
@@ -60,20 +60,15 @@ const Middle = () => {
     fun();
   }, []);
 
+
+
   console.log("post", post);
   console.log("blog", blog);
   console.log("file", files);
 
   return (
     <motion.div className="flex  flex-col m-7 w-full gap-3">
-      <motion.div
-        className=" w-full  flex justify-center items-center "
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: false }}
-        exit={{ opacity: 0, scale: 0 }}
-      >
+      <div className=" w-full  flex justify-center items-center ">
         <form
           onSubmit={handleSUbmit}
           className=" flex justify-between bg-white shadow-2xl w-full rounded-2xl p-2 "
@@ -95,6 +90,23 @@ const Middle = () => {
           </div>
           <button className="flex justify-center items-center bg-white ">
             <BiSolidSend className="text-black bg-white hover:text-blue-500 duration-500 text-[25px] md:text-4xl md:m-2" />
+          </button>
+        </form>
+      </div>
+      <motion.div
+        className=" w-full  flex justify-center items-center "
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: false }}
+        exit={{ opacity: 0, scale: 0 }}
+      >
+        <form
+          onSubmit={handleSUbmit}
+          className=" flex justify-between bg-white shadow-2xl w-full rounded-2xl p-2 "
+        >
+          <button className="flex justify-center items-center bg-white ">
+          <Link to="https://www.linkedin.com/feed/" target="_blank" className="bg-white p-2 text-blue-500 font-bold">Go to LinkedIn Post</Link>
           </button>
         </form>
       </motion.div>

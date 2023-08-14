@@ -47,12 +47,11 @@ cloudinary.config({
   api_key: "732113818452973",
 });
 
-const upload = multer({ storage: multer.diskStorage({}) });
+const upload = multer({ storage: multer.diskStorage({})});
 
 
 // Replace these with your actual Google OAuth credentials
-const GOOGLE_CLIENT_ID =
-  "444451465392-m7b6tl3a1bl00gjvrqhapl92ictsrgp4.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "444451465392-m7b6tl3a1bl00gjvrqhapl92ictsrgp4.apps.googleusercontent.com";
 const LINKEDIN_CLIENT_ID = "77bcey357f6zzs";
 const GOOGLE_CLIENT_SECRET = "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";
 const LINKEDIN_CLIENT_SECRET = "W9y2fDTNfR97i6Jh";
@@ -108,7 +107,7 @@ passport.use(
   )
 );
 
-console.log("acc::::::::undefine",accToken)
+// console.log("acc::::::::undefine",accToken)
 passport.use(
   new GoogleStrategy(
     {
@@ -194,6 +193,8 @@ app.post("/normalUserLogout", function (req, res, next) {
   res.status(202).json(cook);
 });
 
+// logging
+
 app.get("/normalUserGet", async (req, res) => {
   const { token } = req.cookies;
   console.log("167:", token);
@@ -212,6 +213,7 @@ app.get("/normalUserGet", async (req, res) => {
    return res.status(403).json(error);
   }
 });
+// http://localhost:5000/socialUserPost
 
 app.post("/userLogin", async (req, res) => {
   // console.log(req.body);
@@ -364,16 +366,16 @@ const linkedInApiBaseUrl = 'https://api.linkedin.com/v2/';
 app.post('/share', (req, res) => {
   const { content } = req.body; // Assuming the content to be shared is sent in the request body
   // The access token obtained during the authentication process
-  // const accessTok = req.user
-  console.log('accessTok328:', accToken)
+  const accessTok = req.user.accessTok;
+  console.log('accessTok368:', accessTok)
   // The data for the post
-  const postData = {
-    owner: `urn:li:person:${LINKEDIN_CLIENT_ID}`, // Replace with the LinkedIn User ID of the user
-    text: {
-      text: content,
-    },
-  };
-  console.log("post",postData)
+  // const postData = {
+  //   owner: `urn:li:person:${LINKEDIN_CLIENT_ID}`, // Replace with the LinkedIn User ID of the user
+  //   text: {
+  //     text: content,
+  //   },
+  // };
+  // console.log("post",postData)
 });
 
 
